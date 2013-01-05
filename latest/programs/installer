@@ -11,20 +11,6 @@ if fs.exists("bin/latest") == true then
 else
  version = "recommended"
 end
-
-local function downlad(url, path)
- local response = http.get(url)
- if response then
-  local data = response.readAll()
-  response.close()
-  if path then
-   local f = io.open(path, "w")
-   f:write(data)
-   f:close()
-  end
-  return true
- end
-end
 		
 local function fetchFile()
  http.request(fileLocation)
@@ -78,7 +64,7 @@ repeat
 
  saveLocation = program
 
- local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/programs/"..program
+ fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/programs/"..program
  print("Waiting For ", program, "...")
  
  fetchFile()
