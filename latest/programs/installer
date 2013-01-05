@@ -1,3 +1,29 @@
+-- CraftOS+ Installer
+local error = 0
+
+local function fetchFile()
+ http.request(fileLocation)
+ local requesting = true
+ while requesting do
+  local event, url, sourceText = os.pullEvent()
+  if event == "http_success" then
+   local respondedText = sourceText.readAll()
+   requesting = false
+   local download = http.get(fileLocation)
+   local text = download.readAll()
+   download.close()
+   file = fs.open(program, "w")
+   file.write(text)
+   file.close()
+   success = true
+  elseif event == "http_failure" then
+   print("Server didn't respond.")
+   error = error + 1
+   requesting = false
+  end
+ end
+end
+
 rednet.open("top")
 shell.run("clear")
 print("CraftOS+ Updater/Installer")
@@ -22,26 +48,20 @@ repeat
   program = "semistartup"
  end
 
- print("Waiting For ", program, "...")
- if program == "startup" then
-  send = "sendos"
+ if latest == true then
+  local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/latest/programs/"..program
  else
-  send = "send"..program
+  local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/recommended/programs/"..program
  end
- rednet.send(1, send)
- id, filetext = rednet.receive(5)
- sleep(1)
- if id == nil then
-  print(program, " Download Failed")
-  error = error + 1
- end
+ print("Waiting For ", program, "...")
+ 
  file = fs.open(program, "w")
  file.write(filetext)
  file.close()
  x = x + 1
 until x == 7
 
-if x == 0 or x > 1 then
+if error == 0 or error > 1 then
  errors = " Errors."
 elseif x == 1 then
  erros = " Error."
@@ -49,7 +69,5 @@ end
 
 print("Installation Complete With ", error, errors)
 print("If There Was Any Errors, Please Restart The Installer.")
-print("If You Are Using A Disk, Please Remove It Now.")
 print("Press ENTER To Continue.")
 read()
-os.reboot()
