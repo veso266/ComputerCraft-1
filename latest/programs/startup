@@ -1,3 +1,5 @@
+-- CraftOS+ by Sirharry0077
+
 -- Variables
 OSversion = "5.1"
 noconnection = "true"
@@ -296,6 +298,7 @@ elseif version == "latest" and skip == "false" then
  shell.run("installer")
  read()
  fs.delete("bin/skipStartup")
+ fs.delete("installer")
  file = fs.open("bin/skipStartup", "w")
  file.write("true")
  file.close()

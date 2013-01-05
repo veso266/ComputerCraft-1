@@ -52,6 +52,8 @@ repeat
   program = "startup"
  elseif x == 2 then
   program = "install"
+ elseif x == 3 then
+  program = "firewolf"
  end
 
  saveLocation = program
