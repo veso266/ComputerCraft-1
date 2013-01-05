@@ -1,0 +1,4 @@
+file = fs.open("programs/stop", "r")
+stop = file.readAll()
+file.close()
+rednet.send(id, stop)

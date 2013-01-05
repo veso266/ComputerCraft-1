@@ -1,0 +1,145 @@
+rednet.open("top")
+shell.run("clear")
+oldpullEvent = os.pullEvent
+os.pullEvent = os.pullEventRaw
+
+-- Check For Existing Server
+if fs.exists("bin/server") == false then
+ print("Choose Server")
+ print("-------------")
+ print("This Is The ID of The Server That You Would Like To Use")
+ print("The ID Must Be A Number")
+ write("Server: ")
+ newserver = read()
+ fs.makeDir("bin")
+ a = fs.open("bin/server", "w")
+ a.write(newserver)
+ a.close()
+ shell.run("clear")
+end
+
+-- Set Server Varible
+b = fs.open("bin/server", "r")
+serverid = b.readLine()
+b.close()
+serverid = tonumber(serverid)
+
+version = "5.0"
+print("Loading...")
+
+-- Check For Newer Version
+rednet.send(serverid, "sendversion")
+id, newversion = rednet.receive(3)
+shell.run("clear")
+if id == nil then
+ noconnection = "true"
+ newversion = "0"
+end
+vnumber = tonumber(version)
+newvnumber = tonumber(newversion)
+if newvnumber > vnumber then
+ print("Update ", newversion, " Available")
+ print("---------------------")
+ rednet.send(serverid, "sendchangelog")
+ id,  changelog = rednet.receive(3)
+ if id == nil then
+  print("Did Not Receive Change Log")
+ else
+  print("Change Log: ")
+  print(changelog)
+ end
+ write("Update Y/N?: ")
+ answer = read()
+ if answer == "y" then
+  shell.run("install")
+ elseif answer == "n" then
+  print("Loading...")
+ elseif answer == "Y" then
+  shell.run("install")
+ elseif answer == "N" then
+  print("Loading...")
+ else
+  print("Unrecognized Answer")
+  print("Update Canceled")
+  sleep("2")
+ end  
+end
+
+-- First Time Welcome Screen
+if fs.exists("bin") == false then
+ print("Welcome To CraftOS+")
+ print("-------------------")
+ print("Just Press ENTER To Proceed")
+ read()
+ shell.run("clear")
+end
+
+-- Check For Existing Username
+if fs.exists("bin/username") == false then
+ print("Create Username")
+ print("---------------")
+ write("Username: ")
+ newusername = read()
+ fs.makeDir("bin")
+ h = fs.open("bin/username", "w")
+ h.write(newusername)
+ h.close()
+ shell.run("clear")
+end
+
+-- Check For Existing Password
+if fs.exists("bin/password") == false then
+ print("Create Password")
+ print("---------------")
+ write("Password: ")
+ newpassword = read("*")
+ fs.makeDir("bin")
+ g = fs.open("bin/password", "w")
+ g.write(newpassword)
+ g.close()
+ shell.run("clear")
+end
+
+-- Fetch Computer ID
+computerid = os.computerID()
+
+-- Write Login Screen
+shell.run("clear")
+print("Computer #", computerid)
+term.setCursorPos(20, 6)
+print("CraftOS+ ", version)
+term.setCursorPos(20, 7)
+print("------------")
+term.setCursorPos(16, 8)
+print("Username: ")
+term.setCursorPos(16, 9)
+print("Password: ")
+term.setCursorPos(1, 1)
+if noconnection == "true" then
+ print("No Server Connection")
+end
+
+-- Write Exsisting Username To Screen
+term.setCursorPos(26, 8)
+i = fs.open("bin/username", "r")
+user = i.readLine()
+i.close()
+print(user)
+
+-- Check For Correct Password
+term.setCursorPos(26, 9)
+j = fs.open("bin/password", "r")
+pass = j.readLine()
+j.close()
+if read("*") == pass then
+ shell.run("clear")
+ print("CraftOS+ ", version)
+ print("------------")
+else
+ os.reboot()
+end
+
+-- Set Computer Label
+cid = os.getComputerID()
+label = user.."'s Computer | ID "..cid
+os.setComputerLabel(label)

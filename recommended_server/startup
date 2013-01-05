@@ -1,0 +1,89 @@
+oldpullEvent = os.pullEvent
+os.pullEvent = os.pullEventRaw
+
+if fs.exists("programs/version") == false then
+ print("ERROR No Version File")
+ sleep(1)
+else
+ file = fs.open("programs/version", "r")
+ version = file.readLine()
+ file.close()
+end
+
+if fs.exists("bin/username") == false or fs.exists("bin/password") == false then
+ shell.run("clear")
+ print("Welcome To CraftOS+ Server")
+ print("--------------------------")
+ print("Please Follow These Few Simple Steps To Get Your Server Up and Running.")
+ print("Press ENTER To Proceed")
+ read()
+ fs.makeDir("bin")
+end
+ 
+if fs.exists("bin/username") == false then
+ shell.run("clear")
+ print("Create Username")
+ print("---------------")
+ write("Username: ")
+ newusername = read()
+ fs.makeDir("bin")
+ file = fs.open("bin/username", "w")
+ file.write(newusername)
+ file.close()
+end
+
+if fs.exists("bin/password") == false then
+ shell.run("clear")
+ print("Create Password")
+ print("---------------")
+ write("Password: ")
+ newpassword = read("*")
+ fs.makeDir("bin")
+ file = fs.open("bin/password", "w")
+ file.write(newpassword)
+ file.close()
+end
+
+if fs.exists("bin/admins") == false then
+ shell.run("clear")
+ print("Create Admin Computer")
+ print("---------------------")
+ print("This Is The CraftOS+ Computer That You Want To Have Admin Privilages.  You Can Add More Admins Later.")
+ write("Admin ID: ")
+ newadmin = read()
+ fs.makeDir("bin")
+ file = fs.open("bin/admins", "w")
+ file.write(newadmin)
+ file.close()
+end
+
+rednet.open("top")
+shell.run("clear")
+shell.run("server")
+
+shell.run("clear")
+file = fs.open("bin/password", "r")
+password = file.readLine()
+file.close()
+file = fs.open("bin/username", "r")
+user = file.readLine()
+file.close()
+
+-- shell.run("clear")
+print("CraftOS+ Server ", version)
+print("-------------------")
+write("Password: ")
+text = read("*")
+if text == password then
+ shell.run("clear")
+ print("CraftOS+ Server ", version)
+ print("-------------------")
+ print("Welcome To Admin Controls")
+ print("You Can Directly Edit Server Files With The EDIT Command.  For More Help Type HELP.")
+ 
+ cid = os.getComputerID()
+ label = user.."'s Server | ID "..cid
+ os.setComputerLabel(label)
+else
+ os.reboot()
+end

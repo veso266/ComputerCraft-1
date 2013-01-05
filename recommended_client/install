@@ -1,0 +1,26 @@
+-- CraftOS+ Install Program
+rednet.open("top")
+shell.run("clear")
+print("Install")
+print("-------")
+if fs.exists("bin/server") == true then
+ file = fs.open("bin/server", "r")
+ serverid = file.readLine()
+ file.close()
+ serverid = tonumber(serverid)
+else
+ write("Server ID: ")
+ serverid = read()
+ serverid = tonumber(serverid)
+end
+rednet.send(serverid, "sendinstaller")
+id, filetext = rednet.receive(5)
+if id == nil then
+ print("Update Failed")
+ sleep(2)
+ os.reboot()
+end
+file = fs.open("installer", "w")
+file.write(filetext)
+file.close()
+shell.run("installer")

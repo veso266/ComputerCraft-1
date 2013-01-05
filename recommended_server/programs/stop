@@ -1,0 +1,14 @@
+shell.run("clear")
+print("Stopping Server...")
+print("------------------")
+rednet.send(serverid, "stop")
+id, msg = rednet.receive(5)
+if msg == "stopped" then
+ print("Server Stopped")
+elseif id == nil then
+ print("No Server Response")
+end
+
+print("Press ENTER To Finish")
+read()
+shell.run("semistartup")

@@ -1,0 +1,4 @@
+file = fs.open("programs/semistartup", "r")
+semistartup = file.readAll()
+file.close()
+rednet.send(id, semistartup)

@@ -1,0 +1,17 @@
+stop = "false"
+print("CraftOS+ Server Computer ", version)
+print("----------------------------")
+print("To Stop Server Execute The STOP Command On An Admin Computer.")
+
+repeat
+
+print("Waiting For Message")
+id, msg = rednet.receive()
+print(msg, " From ", id)
+sleep(1)
+
+msg = "code/"..msg
+shell.run(msg)
+
+print("------------------------")
+until stop == "true"

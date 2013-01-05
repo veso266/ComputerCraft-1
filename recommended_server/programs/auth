@@ -1,0 +1,15 @@
+auth = "false"
+print("Authorizing Admin ID ".. id)
+users = fs.open("bin/admins", "r") while true do
+ line = users.readLine()
+ if not line then
+  print("User ID ".. id .." Authorization Failed.")
+  auth = "false"
+  break
+ elseif line == tostring(id) then
+  print("Admin ID ".. id .." Authorization Succesfully.")
+  auth = "true"
+  break
+ end
+end
+users.close()

@@ -1,0 +1,24 @@
+shell.run("clear")
+print("CraftOS+ Help Guide Page 1")
+print("--------------------------")
+if fs.exists("programs/help") == true then
+ file = fs.open("programs/help", "r")
+ text = file.readAll()
+ file.close()
+ print(text)
+else
+ print("ERROR The Help Guide Is Missing")
+end
+print("Press ENTER For The Next Page")
+read()
+shell.run("clear")
+print("CraftOS+ Help Guide Page 2")
+print("--------------------------")
+if fs.exists("programs/help2") == true then
+ file = fs.open("programs/help2", "r")
+ text = file.readAll()
+ file.close()
+ print(text)
+else
+ print("ERROR The Help Guide Is Missing")
+end

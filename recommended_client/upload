@@ -1,0 +1,27 @@
+shell.run("clear")
+print("Upload To Server")
+print("----------------")
+write("File: ")
+filename = read()
+write("Destination: ")
+destination = read()
+file = fs.open(filename, "r")
+filetext = file.readAll()
+file.close()
+rednet.send(serverid, "upload")
+sleep(1)
+rednet.send(serverid, destination)
+sleep(1)
+rednet.send(serverid, filetext)
+id, msg = rednet.receive(5)
+if msg == "success" then
+ print("Upload Successful")
+elseif id == nil then
+ print("No Server Response")
+else
+ print("Upload Unsuccessful")
+end
+
+print("Press ENTER To Finish")
+read()
+shell.run("semistartup")

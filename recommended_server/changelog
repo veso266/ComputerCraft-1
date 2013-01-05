@@ -1,0 +1,11 @@
+shell.run("clear")
+print("CraftOS+ Changelog")
+print("------------------")
+if fs.exists("programs/changelog") == true then
+ file = fs.open("programs/changelog", "r")
+ text = file.readAll()
+ file.close()
+ print(text)
+else
+ print("ERROR The Changelog Is Missing")
+end

@@ -1,0 +1,9 @@
+shell.run("programs/auth")
+if auth == "true" then 
+ print("Server Stopped By Admin")
+ stop = "true"
+ sleep(1)
+ rednet.send(id, "stopped")
+else
+ print("Stop Command Not stoporized")
+end

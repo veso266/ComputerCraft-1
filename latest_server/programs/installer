@@ -1,0 +1,55 @@
+rednet.open("top")
+shell.run("clear")
+print("CraftOS+ Updater/Installer")
+print("--------------------------")
+print("Press ENTER To Proceed")
+read()
+x = 1
+error = 0
+errors = "PLACEHOLDER"
+repeat
+ if x == 1 then
+  program = "startup"
+ elseif x == 2 then
+  program = "install"
+ elseif x == 3 then
+  program = "download"
+ elseif x == 4 then
+  program = "upload"
+ elseif x == 5 then
+  program = "stop"
+ elseif x == 6 then
+  program = "semistartup"
+ end
+
+ print("Waiting For ", program, "...")
+ if program == "startup" then
+  send = "sendos"
+ else
+  send = "send"..program
+ end
+ rednet.send(1, send)
+ id, filetext = rednet.receive(5)
+ sleep(1)
+ if id == nil then
+  print(program, " Download Failed")
+  error = error + 1
+ end
+ file = fs.open(program, "w")
+ file.write(filetext)
+ file.close()
+ x = x + 1
+until x == 7
+
+if x == 0 or x > 1 then
+ errors = " Errors."
+elseif x == 1 then
+ erros = " Error."
+end
+
+print("Installation Complete With ", error, errors)
+print("If There Was Any Errors, Please Restart The Installer.")
+print("If You Are Using A Disk, Please Remove It Now.")
+print("Press ENTER To Continue.")
+read()
+os.reboot()
