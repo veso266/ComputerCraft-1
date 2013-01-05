@@ -149,6 +149,12 @@ function fetchComputerID()
 computerid = os.computerID()
 end
 
+function screenClear()
+  shell.run("clear")
+  print("CraftOS+ ", version)
+  print("------------")
+end
+
 function writeLoginSreen() 
  shell.run("clear")
  term.setCursorPos(1, 1)
@@ -177,9 +183,7 @@ function writeLoginSreen()
  pass = file.readLine()
  file.close()
  if read("*") == pass then
-  shell.run("clear")
-  print("CraftOS+ ", version)
-  print("------------")
+  screenClear()
  else
   writeLoginSreen()
  end
@@ -190,6 +194,59 @@ local function setComputerLabel()
  label = user.."'s Computer | ID "..cid
  os.setComputerLabel(label)
 end
+
+function commandUpload()
+ shell.run("clear")
+ print("Upload To Server")
+ print("----------------")
+ write("File: ")
+ filename = read()
+ write("Destination: ")
+ destination = read()
+ file = fs.open(filename, "r")
+ filetext = file.readAll()
+ file.close()
+ rednet.send(serverid, "upload")
+ sleep(1)
+ rednet.send(serverid, destination)
+ sleep(1)
+ rednet.send(serverid, filetext)
+ id, msg = rednet.receive(5)
+ if msg == "success" then
+  print("Upload Successful")
+ elseif id == nil then
+  print("No Server Response")
+ else
+  print("Upload Unsuccessful")
+ end
+ sleep(2)
+ screenClear()
+end
+
+function commandDownload()
+ shell.run("clear")
+ print("Download")
+ print("--------")
+ write("File: ")
+ filename = read()
+ write("Location: ")
+ filename2 = read()
+ rednet.send(serverid, "download")
+ sleep(1)
+ rednet.send(serverid, filename2)
+ id, filetext = rednet.receive(5)
+ if id == serverid and id ~= nil then
+  print("File Received")
+  file = fs.open(filename, "w")
+  file.write(filetext)
+  file.close()
+ else
+  print("No Server Response")
+ end
+ sleep(2)
+ screenClear()
+end
+
 -- Code
 rednet.open("top")
 shell.run("clear")
@@ -223,3 +280,51 @@ testServerConnection()
 fetchComputerID()
 setComputerLabel()
 writeLoginSreen()
+screenClear()
+
+-- Read Entrie and Do Appropiate Action
+arguments = {}
+invalidcommands = {}
+fail = false
+while true do
+ oldpullEvent = os.pullEvent
+ os.pullEvent = os.pullEventRaw
+ 
+ write("> ")
+ local command = read()
+ for match in string.gmatch(command, "[^ \t]+") do
+   table.insert( arguments, match )
+ end
+ 
+ for i,v in ipairs(invalidcommands) do
+  if arguments[1] == v then
+   print("Invalid command.")
+   sleep(1)
+   fail = true
+  end
+ end
+ 
+ if not fail then
+  if arguments[1] == "clear" then
+   clearSreen()
+  elseif arguments[1] == "upload" then
+   commandUpload()
+  elseif arguments[1] == "download" then
+   commandDownload()
+  else
+   if arguments[3] == nil then
+    if arguments[2] == nil then
+     shell.run(arguments[1])
+    else
+     shell.run(arguments[1], arguments[2])
+    end
+   else
+    shell.run(arguments[1], arguments[2], arguments[3])
+   end
+  end
+ end
+ fail = false
+ arguments = {}
+ 
+ os.pullEvent = oldpullEvent
+end
