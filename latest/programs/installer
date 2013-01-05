@@ -1,6 +1,17 @@
 -- CraftOS+ Installer
 local error = 0
 
+if fs.exists("bin/latest") == true then
+ file = fs.open("bin/latest", "r")
+ text = file.readLine()
+ file.close()
+ if text == "true" then
+  latest = true
+ end
+else
+ latest = false
+end
+
 local function fetchFile()
  http.request(fileLocation)
  local requesting = true
@@ -28,6 +39,9 @@ rednet.open("top")
 shell.run("clear")
 print("CraftOS+ Updater/Installer")
 print("--------------------------")
+if latest == true then
+ print("Latest Version Download Active")
+end
 print("Press ENTER To Proceed")
 read()
 x = 1

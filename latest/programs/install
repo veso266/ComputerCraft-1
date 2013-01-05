@@ -1,29 +1,31 @@
 -- CraftOS+ Install Program
-latest = false
+local latest = false
+program = "installer"
 if latest == true then
- local installLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/latest/programs/installer"
+ local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/latest/programs/"..program
 else
- local installLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/recommended/programs/installer"
+ local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/recommended/programs/"..program
 end
 
 local function fetchFile()
- http.request(installLocation)
+ http.request(fileLocation)
  local requesting = true
  while requesting do
   local event, url, sourceText = os.pullEvent()
   if event == "http_success" then
    local respondedText = sourceText.readAll()
    requesting = false
-   local download = http.get(installLocation)
+   local download = http.get(fileLocation)
    local text = download.readAll()
    download.close()
-   file = fs.open("installer", "w")
+   file = fs.open(program, "w")
    file.write(text)
    file.close()
    success = true
   elseif event == "http_failure" then
    print("Server didn't respond.")
    requesting = false
+   success = false
   end
  end
 end
