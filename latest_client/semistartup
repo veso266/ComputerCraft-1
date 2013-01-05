@@ -1,3 +1,0 @@
-shell.run("clear")
-print("CraftOS+ ", version)
-print("------------")
