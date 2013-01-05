@@ -1,5 +1,5 @@
 -- CraftOS+ Install Program
-latest == false
+latest = false
 if latest == true then
  local installLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/latest/programs/installer"
 else
