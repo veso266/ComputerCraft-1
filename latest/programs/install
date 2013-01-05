@@ -1,5 +1,15 @@
 -- CraftOS+ Install Program
-local latest = false
+if fs.exists("bin/latest") == true then
+ file = fs.open("bin/latest", "r")
+ text = file.readLine()
+ file.close()
+ if text == "true" then
+  latest = true
+  print("Latest Version Download Active")
+ end
+else
+ latest = false
+end
 program = "installer"
 if latest == true then
  local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/latest/programs/"..program
