@@ -34,7 +34,7 @@ print("Install")
 print("-------")
 
 fetchFile()
-if success = true then
+if success == true then
  shell.run("installer")
  fs.delete("installer")
  os.reboot()
