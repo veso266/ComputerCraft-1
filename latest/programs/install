@@ -4,18 +4,13 @@ if fs.exists("bin/latest") == true then
  text = file.readLine()
  file.close()
  if text == "true" then
-  latest = true
-  print("Latest Version Download Active")
+  version = "latest"
  end
 else
- latest = false
+ version = "recommended"
 end
 program = "installer"
-if latest == true then
- local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/latest/programs/"..program
-else
- local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/recommended/programs/"..program
-end
+local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/programs/"..program
 
 local function fetchFile()
  http.request(fileLocation)

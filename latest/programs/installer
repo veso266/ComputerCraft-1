@@ -6,12 +6,26 @@ if fs.exists("bin/latest") == true then
  text = file.readLine()
  file.close()
  if text == "true" then
-  latest = true
+  version = "latest"
  end
 else
- latest = false
+ version = "recommended"
 end
 
+local function downlad(url, path)
+ local response = http.get(url)
+ if response then
+  local data = response.readAll()
+  response.close()
+  if path then
+   local f = io.open(path, "w")
+   f:write(data)
+   f:close()
+  end
+  return true
+ end
+end
+		
 local function fetchFile()
  http.request(fileLocation)
  local requesting = true
@@ -39,7 +53,7 @@ rednet.open("top")
 shell.run("clear")
 print("CraftOS+ Updater/Installer")
 print("--------------------------")
-if latest == true then
+if version == "latest" then
  print("Latest Version Download Active")
 end
 print("Press ENTER To Proceed")
@@ -62,16 +76,13 @@ repeat
   program = "semistartup"
  end
 
- if latest == true then
-  local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/latest/programs/"..program
- else
-  local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/recommended/programs/"..program
- end
+ saveLocation = program
+
+ local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/programs/"..program
  print("Waiting For ", program, "...")
  
- file = fs.open(program, "w")
- file.write(filetext)
- file.close()
+ fetchFile()
+
  x = x + 1
 until x == 7
 
