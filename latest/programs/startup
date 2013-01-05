@@ -1,8 +1,8 @@
 -- Variables
-version = "5.1"
-local noconnection = "true"
-local version = "recommended"
-local newVersion = 0
+OSversion = "5.1"
+noconnection = "true"
+version = "recommended"
+newVersion = 0
 skip = "false"
 -- Get Variable
 if fs.exists("bin/latest") == true then
@@ -52,7 +52,10 @@ function checkNewerVersion()
  file = fs.open("bin/version", "r")
  newVersion = file.readLine()
  file.close()
- vnumber = tonumber(version)
+ if success == false then
+  newVersion = "0"
+ end
+ vnumber = tonumber(OSversion)
  newvnumber = tonumber(newVersion)
  if newvnumber > vnumber then
   shell.run("clear")
@@ -151,7 +154,7 @@ end
 
 function screenClear()
   shell.run("clear")
-  print("CraftOS+ ", version)
+  print("CraftOS+ ", OSversion)
   print("------------")
 end
 
@@ -160,7 +163,7 @@ function writeLoginSreen()
  term.setCursorPos(1, 1)
  print("Computer #", computerid)
  term.setCursorPos(20, 6)
- print("CraftOS+ ", version)
+ print("CraftOS+ ", OSversion)
  term.setCursorPos(20, 7)
  print("------------")
  term.setCursorPos(16, 8)
@@ -190,6 +193,9 @@ function writeLoginSreen()
 end
 
 local function setComputerLabel()
+ file = fs.open("bin/username", "r")
+ user = file.readLine()
+ file.close()
  cid = os.getComputerID()
  label = user.."'s Computer | ID "..cid
  os.setComputerLabel(label)
@@ -201,6 +207,12 @@ function commandUpload()
  print("----------------")
  write("File: ")
  filename = read()
+ if fs.exists(filename) == false then
+  print("File Doesn't Exist")
+  sleep(2)
+  commandUpload()
+  return
+ end
  write("Destination: ")
  destination = read()
  file = fs.open(filename, "r")
@@ -241,6 +253,21 @@ function commandDownload()
   file.write(filetext)
   file.close()
  else
+  print("No Server Response")
+ end
+ sleep(2)
+ screenClear()
+end
+
+function stopServer()
+ shell.run("clear")
+ print("Stopping Server...")
+ print("------------------")
+ rednet.send(serverid, "stop")
+ id, msg = rednet.receive(5)
+ if msg == "stopped" then
+  print("Server Stopped")
+ elseif id == nil then
   print("No Server Response")
  end
  sleep(2)
@@ -311,6 +338,11 @@ while true do
    commandUpload()
   elseif arguments[1] == "download" then
    commandDownload()
+  elseif arguments[1] == "firewolf" then
+   shell.run("firewolf")
+   screenClear()
+  elseif arguments[1] == "stop" then
+   stopServer()
   else
    if arguments[3] == nil then
     if arguments[2] == nil then

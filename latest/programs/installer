@@ -52,14 +52,6 @@ repeat
   program = "startup"
  elseif x == 2 then
   program = "install"
- elseif x == 3 then
-  program = "download"
- elseif x == 4 then
-  program = "upload"
- elseif x == 5 then
-  program = "stop"
- elseif x == 6 then
-  program = "semistartup"
  end
 
  saveLocation = program
@@ -70,7 +62,7 @@ repeat
  fetchFile()
 
  x = x + 1
-until x == 7
+until x == 3
 
 if error == 0 or error > 1 then
  errors = " Errors."
