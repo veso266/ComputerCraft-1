@@ -20,6 +20,28 @@ end
 rootFolder = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/"
 
 -- Functions
+
+function openRednet()
+ x = 1
+ repeat
+  if x == 1 then
+   side = "right"
+  elseif x == 2 then
+   side = "left"
+  elseif x == 3 then
+   side = "top"
+  elseif x == 4 then
+   side = "bottom"
+  elseif x == 5 then
+   side = "back"
+  end
+  if rednet.isOpen(side) == nil then
+   rednet.open(side)
+  end
+  x = x + 1
+ until x == 6
+end
+
 function download(url, path)
  http.request(url)
  local requesting = true
@@ -54,6 +76,7 @@ function checkNewerVersion()
  file = fs.open("bin/version", "r")
  newVersion = file.readLine()
  file.close()
+ fs.delete("bin/version")
  if success == false then
   newVersion = "0"
  end
@@ -277,7 +300,7 @@ function stopServer()
 end
 
 -- Code
-rednet.open("top")
+openRednet()
 shell.run("clear")
 oldpullEvent = os.pullEvent
 os.pullEvent = os.pullEventRaw
@@ -344,6 +367,7 @@ while true do
   elseif arguments[1] == "firewolf" then
    shell.run("firewolf")
    screenClear()
+   openRednet()
   elseif arguments[1] == "stop" then
    stopServer()
   else
