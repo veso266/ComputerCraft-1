@@ -1,4 +1,0 @@
-file = fs.open("programs/install", "r")
-install = file.readAll()
-file.close()
-rednet.send(id, install)

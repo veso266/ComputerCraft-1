@@ -1,4 +1,0 @@
-file = fs.open("programs/upload", "r")
-upload = file.readAll()
-file.close()
-rednet.send(id, upload)

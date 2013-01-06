@@ -1,4 +1,0 @@
-file = fs.open("programs/download", "r")
-download = file.readAll()
-file.close()
-rednet.send(id, download)

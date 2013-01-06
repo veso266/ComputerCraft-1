@@ -1,26 +1,71 @@
 -- CraftOS+ Install Program
-rednet.open("top")
+if fs.exists("bin/latest") == true then
+ file = fs.open("bin/latest", "r")
+ text = file.readLine()
+ file.close()
+ if text == "true" then
+  version = "latest"
+ end
+else
+ version = "recommended"
+end
+program = "installer"
+local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/programs/"..program
+
+local function fetchFile()
+ http.request(fileLocation)
+ local requesting = true
+ while requesting do
+  local event, url, sourceText = os.pullEvent()
+  if event == "http_success" then
+   local respondedText = sourceText.readAll()
+   requesting = false
+   local download = http.get(fileLocation)
+   local text = download.readAll()
+   download.close()
+   file = fs.open(program, "w")
+   file.write(text)
+   file.close()
+   success = true
+  elseif event == "http_failure" then
+   print("Server didn't respond.")
+   requesting = false
+   success = false
+  end
+ end
+end
+
+local function openRednet()
+ x = 1
+ repeat
+  if x == 1 then
+   side = "right"
+  elseif x == 2 then
+   side = "left"
+  elseif x == 3 then
+   side = "top"
+  elseif x == 4 then
+   side = "bottom"
+  elseif x == 5 then
+   side = "back"
+  end
+  if rednet.isOpen(side) == nil then
+   rednet.open(side)
+  end
+  x = x + 1
+ until x == 6
+end
+
+openRednet()
 shell.run("clear")
 print("Install")
 print("-------")
-if fs.exists("bin/server") == true then
- file = fs.open("bin/server", "r")
- serverid = file.readLine()
- file.close()
- serverid = tonumber(serverid)
-else
- write("Server ID: ")
- serverid = read()
- serverid = tonumber(serverid)
-end
-rednet.send(serverid, "sendinstaller")
-id, filetext = rednet.receive(5)
-if id == nil then
- print("Update Failed")
- sleep(2)
+
+fetchFile()
+if success == true then
+ shell.run("installer")
+ fs.delete("installer")
  os.reboot()
+else
+ print("Please Try Again")
 end
-file = fs.open("installer", "w")
-file.write(filetext)
-file.close()
-shell.run("installer")

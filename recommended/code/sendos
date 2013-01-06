@@ -1,4 +1,0 @@
-file = fs.open("programs/craftos", "r")
-filetext = file.readAll()
-file.close()
-rednet.send(id, filetext)

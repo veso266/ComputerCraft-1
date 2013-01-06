@@ -9,7 +9,7 @@ if fs.exists("bin/latest") == true then
 else
  version = "recommended"
 end
-program = "installer"
+program = "serverinstaller"
 local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/programs/"..program
 
 local function fetchFile()
@@ -35,7 +35,28 @@ local function fetchFile()
  end
 end
 
-rednet.open("top")
+local function openRednet()
+ x = 1
+ repeat
+  if x == 1 then
+   side = "right"
+  elseif x == 2 then
+   side = "left"
+  elseif x == 3 then
+   side = "top"
+  elseif x == 4 then
+   side = "bottom"
+  elseif x == 5 then
+   side = "back"
+  end
+  if rednet.isOpen(side) == nil then
+   rednet.open(side)
+  end
+  x = x + 1
+ until x == 6
+end
+
+openRednet()
 shell.run("clear")
 print("Install")
 print("-------")

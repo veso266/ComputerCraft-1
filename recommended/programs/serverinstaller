@@ -11,26 +11,26 @@ if fs.exists("bin/latest") == true then
 else
  version = "recommended"
 end
+rootFolder = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/"
 		
-local function fetchFile()
- http.request(fileLocation)
+function download(url, path)
+ http.request(url)
  local requesting = true
  while requesting do
   local event, url, sourceText = os.pullEvent()
   if event == "http_success" then
    local respondedText = sourceText.readAll()
    requesting = false
-   local download = http.get(fileLocation)
-   local text = download.readAll()
-   download.close()
-   file = fs.open(program, "w")
+   local getFile = http.get(url)
+   local text = getFile.readAll()
+   getFile.close()
+   file = fs.open(path, "w")
    file.write(text)
    file.close()
    success = true
   elseif event == "http_failure" then
-   print("Server didn't respond.")
-   error = error + 1
    requesting = false
+   success = false
   end
  end
 end
@@ -70,22 +70,55 @@ error = 0
 errors = "PLACEHOLDER"
 repeat
  if x == 1 then
-  program = "startup"
+  program = "Startup"
+  location = "startup"
  elseif x == 2 then
-  program = "install"
+  program = "Server"
+  location = "server"
  elseif x == 3 then
-  program = "firewolf"
+  program = "Firewolf"
+  location = "firewolf"
+ elseif x == 4 then
+  program = "Help"
+  location = "help"
+ elseif x == 5 then
+  program = "Download"
+  location = "code/download"
+ elseif x == 6 then
+  program = "Stop"
+  location = "code/stop"
+ elseif x == 7 then
+  program = "Test Connection"
+  location = "code/testconnection"
+ elseif x == 8 then
+  program = "Upload"
+  location = "code/upload"
+ elseif x == 9 then
+  program = "Auth"
+  location = "programs/auth"
+ elseif x == 10 then
+  program = "Changelog"
+  location = "programs/changelog"
+ elseif x == 11 then
+  program = "Help1"
+  location = "programs/help"
+ elseif x == 12 then
+  program = "Help2"
+  location = "programs/help2"
+ elseif x == 13 then
+  program = "Server Install"
+  location = "programs/serverinstall"
+ elseif x == 14 then
+  program = "Version"
+  location = "programs/version"
  end
 
- saveLocation = program
-
- fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/programs/"..program
- print("Waiting For ", program, "...")
+ url1 = rootFolder..location
  
- fetchFile()
+ download(url1, location)
 
  x = x + 1
-until x == 3
+until x == 15
 
 if error == 0 or error > 1 then
  errors = " Errors."

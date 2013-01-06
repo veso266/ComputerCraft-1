@@ -1,5 +1,0 @@
-file = fs.open("programs/version", "r")
-version = file.readAll()
-print("Version ", version)
-file.close()
-rednet.send(id, version)
