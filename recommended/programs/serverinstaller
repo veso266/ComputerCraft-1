@@ -21,8 +21,8 @@ function download(url, path)
   if event == "http_success" then
    local respondedText = sourceText.readAll()
    requesting = false
-   local getFile = http.get(url)
-   local text = getFile.readAll()
+   getFile = http.get(url)
+   text = getFile.readAll()
    getFile.close()
    file = fs.open(path, "w")
    file.write(text)

@@ -63,8 +63,8 @@ print("-------")
 
 fetchFile()
 if success == true then
- shell.run("installer")
- fs.delete("installer")
+ shell.run("serverinstaller")
+ fs.delete("serverinstaller")
  os.reboot()
 else
  print("Please Try Again")
