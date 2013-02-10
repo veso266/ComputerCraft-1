@@ -1,14 +1,5 @@
 -- CraftOS+ Install Program
-if fs.exists("bin/latest") == true then
- file = fs.open("bin/latest", "r")
- text = file.readLine()
- file.close()
- if text == "true" then
-  version = "latest"
- end
-else
- version = "recommended"
-end
+version = "recommended"
 program = "serverinstaller"
 local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/programs/"..program
 

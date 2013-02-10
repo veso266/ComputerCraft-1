@@ -1,7 +1,7 @@
 -- CraftOS+ Client by Sirharry0077
 
 -- Variables
-OSversion = "5.1"
+OSversion = "6.0"
 noconnection = "true"
 version = "recommended"
 newVersion = 0
