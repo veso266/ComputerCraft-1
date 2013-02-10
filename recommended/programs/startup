@@ -328,6 +328,7 @@ local function checkFirstTime()
   print("---------------")
   write("Password: ")
   newpassword = read("*")
+  newpassword = encrypt(newpassword, newpassword)
   fs.makeDir("bin")
   file = fs.open("bin/password", "w")
   file.write(newpassword)
@@ -373,7 +374,9 @@ function writeLoginSreen()
  file = fs.open("bin/password", "r")
  pass = file.readLine()
  file.close()
- if read("*") == pass then
+ pass2 = read("*")
+ pass1 = encrypt(pass2, pass2)
+ if pass1 == pass then
   screenClear()
  else
   writeLoginSreen()

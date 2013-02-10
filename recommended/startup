@@ -177,6 +177,29 @@ function decrypt(data,psw)
 	return oData,out,chs
 end
 
+function openRednet()
+ x = 1
+ repeat
+  if x == 1 then
+   side = "right"
+  elseif x == 2 then
+   side = "left"
+  elseif x == 3 then
+   side = "top"
+  elseif x == 4 then
+   side = "bottom"
+  elseif x == 5 then
+   side = "back"
+  end
+  if rednet.isOpen(side) == nil then
+   rednet.open(side)
+  end
+  x = x + 1
+ until x == 6
+end
+openRednet()
+
+shell.run("clear")
 if fs.exists("programs/version") == false then
  print("ERROR No Version File")
  sleep(1)
@@ -214,9 +237,10 @@ if fs.exists("bin/password") == false then
  print("---------------")
  write("Password: ")
  newpassword = read("*")
+ newpassword1 = encrypt(newpassword, newpassword)
  fs.makeDir("bin")
  file = fs.open("bin/password", "w")
- file.write(newpassword)
+ file.write(newpassword1)
  file.close()
 end
 
@@ -233,24 +257,24 @@ if fs.exists("bin/admins") == false then
  file.close()
 end
 
-rednet.open("top")
 shell.run("clear")
 shell.run("server")
 
 shell.run("clear")
 file = fs.open("bin/password", "r")
-password = file.readLine()
+encryptedPassword = file.readLine()
 file.close()
 file = fs.open("bin/username", "r")
 user = file.readLine()
 file.close()
 
--- shell.run("clear")
+shell.run("clear")
 print("CraftOS+ Server ", version)
 print("-------------------")
 write("Password: ")
 text = read("*")
-if text == password then
+text = encrypt(text, text)
+if text == encryptedPassword then
  shell.run("clear")
  print("CraftOS+ Server ", version)
  print("-------------------")
