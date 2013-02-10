@@ -85,7 +85,7 @@ repeat
  fetchFile()
 
  x = x + 1
-until x == 3
+until x == 4
 
 if error == 0 or error > 1 then
  errors = " Errors."
