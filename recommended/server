@@ -1,7 +1,10 @@
+-- CraftOS+ Server By Sirharry0077
+
 stop = "false"
 print("CraftOS+ Server Computer ", version)
 print("----------------------------")
 print("To Stop Server Execute The STOP Command On An Admin Computer.")
+print("----------------------------")
 
 repeat
 
@@ -11,7 +14,11 @@ print(msg, " From ", id)
 sleep(1)
 
 msg = "code/"..msg
-shell.run(msg)
+if fs.exists(msg) == true then
+ shell.run(msg)
+else
+ print(msg.." Doesn't Exist")
+end
 
-print("------------------------")
+print("----------------------------")
 until stop == "true"

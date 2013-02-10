@@ -1,6 +1,9 @@
 -- CraftOS+ Installer
 local error = 0
 
+fs.makeDir("code")
+fs.makeDir("programs")
+
 if fs.exists("bin/latest") == true then
  file = fs.open("bin/latest", "r")
  text = file.readLine()
