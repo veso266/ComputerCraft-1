@@ -1,0 +1,15 @@
+Server Directories:
+ -There is three directories.
+ -Bin: Holds Server Only Access Files
+ -Programs: Holds The Files For Client Computers
+ -Code: Holds Protocals For Server Events
+Computer Programs:
+ -These are programs for the client and server.
+ -Auth: Authroizes Admins
+ -Changelog: Newest Version's Changelog
+ -Startup: Newest OS
+ -Download: Admin Program To Download Files
+ -Install: Fetches Installer
+ -Installer: Fetches Software And Installs It
+ -Version: The Newest OS Version
+ -Upload: Admin Program To Upload Files

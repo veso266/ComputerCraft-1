@@ -1,0 +1,9 @@
+Creating Protocals:
+ -Any program put in the code directory can be called on by sending the server the name of the file with rednet.send().
+ 
+Admins:
+ -A protocal which is meant only for certain people, can use the "programs/auth" program to verify that it is an admin.
+ -An admin can be added by executing: edit bin/admins
+ 
+Credits:
+ CraftOS+ Was Created By Sirharry0077

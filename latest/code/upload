@@ -1,0 +1,16 @@
+print("Waiting For File Destination")
+id, msg2 = rednet.receive(5)
+shell.run("programs/auth")
+if auth == "true" then
+ print("Waiting For File")
+ id, msg3 = rednet.receive(5)
+ shell.run("programs/auth")
+ if auth == "true" then
+  file = fs.open(msg2, "w")
+  file.write(msg3)
+  file.close()
+  sleep(1)
+  rednet.send(id, "success")
+  print(msg2, " Uploaded Successfully")
+ end
+end

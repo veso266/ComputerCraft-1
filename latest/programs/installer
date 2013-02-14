@@ -1,0 +1,99 @@
+-- CraftOS+ Installer
+local error = 0
+
+if fs.exists("bin/latest") == true then
+ file = fs.open("bin/latest", "r")
+ text = file.readLine()
+ file.close()
+ if text == "true" then
+  version = "latest"
+ end
+else
+ version = "recommended"
+end
+		
+local function fetchFile()
+ http.request(fileLocation)
+ local requesting = true
+ while requesting do
+  local event, url, sourceText = os.pullEvent()
+  if event == "http_success" then
+   local respondedText = sourceText.readAll()
+   requesting = false
+   local download = http.get(fileLocation)
+   local text = download.readAll()
+   download.close()
+   file = fs.open(program, "w")
+   file.write(text)
+   file.close()
+   success = true
+  elseif event == "http_failure" then
+   print("Server didn't respond.")
+   error = error + 1
+   requesting = false
+  end
+ end
+end
+
+local function openRednet()
+ x = 1
+ repeat
+  if x == 1 then
+   side = "right"
+  elseif x == 2 then
+   side = "left"
+  elseif x == 3 then
+   side = "top"
+  elseif x == 4 then
+   side = "bottom"
+  elseif x == 5 then
+   side = "back"
+  end
+  if rednet.isOpen(side) == nil then
+   rednet.open(side)
+  end
+  x = x + 1
+ until x == 6
+end
+
+openRednet()
+shell.run("clear")
+print("CraftOS+ Updater/Installer")
+print("--------------------------")
+if version == "latest" then
+ print("Latest Version Download Active")
+end
+print("Press ENTER To Proceed")
+read()
+x = 1
+error = 0
+errors = "PLACEHOLDER"
+repeat
+ if x == 1 then
+  program = "startup"
+ elseif x == 2 then
+  program = "install"
+ elseif x == 3 then
+  program = "firewolf"
+ end
+
+ saveLocation = program
+
+ fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/programs/"..program
+ print("Waiting For ", program, "...")
+ 
+ fetchFile()
+
+ x = x + 1
+until x == 4
+
+if error == 0 or error > 1 then
+ errors = " Errors."
+elseif x == 1 then
+ erros = " Error."
+end
+
+print("Installation Complete With ", error, errors)
+print("If There Was Any Errors, Please Restart The Installer.")
+print("Press ENTER To Continue.")
+read()
