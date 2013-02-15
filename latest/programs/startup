@@ -9,7 +9,7 @@ newVersion = 0
 skip = "false"
 -- Get Variable
 rootFolder = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/"
-if term.isColor == true then
+if term.isColor() then
 	color = true
 else
 	color = false
@@ -353,45 +353,46 @@ function screenClear()
 end
 
 function writeLine(text)
-	length = text:len()
+	length = string.len(text)
 	length = length - 1
 	line = "-"
 	repeat
 		line = line.."-"
 		length = length - 1
 	until length == 0
-	text = line
-	cPrint(text)
 end
 
 function writeLoginSreen() 
  termClear()
  term.setCursorPos(1, 1)
  print("Computer #", computerid)
- term.setCursorPos(20, 6)
- text = "CraftOS+ "..OSversion
- cPrint(text)
- term.setCursorPos(20, 7)
- writeLine(text)
- term.setCursorPos(16, 8)
- print("Username: ")
- term.setCursorPos(16, 9)
- print("Password: ")
+ 
+ text1 = "CraftOS+ "..OSversion
+ center(text1, 0, -4)
+ 
+ text2 = "CraftOS+ "..OSversion
+ writeLine(text2)
+ center(line, 0, -3)
+ 
  term.setCursorPos(1, 1)
  if noconnection == "true" then
   print("No Server Connection")
  end
 
- term.setCursorPos(26, 8)
+ text3 = "Username: "
+ center(text3, -4, -1)
  file = fs.open("bin/username", "r")
  user = file.readLine()
  file.close()
- print(user)
+ center(user, 3, -1)
 
- term.setCursorPos(26, 9)
+ text4 = "Password: "
+ center(text4, -4, 0)
  file = fs.open("bin/password", "r")
  pass = file.readLine()
  file.close()
+ text5 = nil
+ center(text5, 3, 0)
  pass2 = read("*")
  pass1 = encrypt(pass2, pass2)
  if pass1 == pass then
@@ -401,11 +402,22 @@ function writeLoginSreen()
  end
 end
 
-function cPrint(text)
-	local x2,y2 = term.getCursorPos()
+function center(text, xoffset, yoffset)
+	if xoffset == nil then xoffset = 0 end
+	if yoffset == nil then yoffset = 0 end
+	if text ~= nil then
+		len = string.len(text)
+		len = math.ceil(len / 2)
+	else
+		len = 2
+	end
 	local x,y = term.getSize()
-	term.setCursorPos(math.ceil((x / 2) - (text:len() / 2)), y2)
-	print(text)
+	x = math.ceil((x / 2) - len + xoffset)
+	y = math.ceil((y / 2) + yoffset)
+	term.setCursorPos(x, y)
+	if text ~= nil then
+		print(text)
+	end
 end
 
 local function setComputerLabel()
@@ -580,13 +592,21 @@ function termClear()
 	term.clear()
 	term.setCursorPos(1,1)
 end
+
+function setColor()
+	if color == true then
+		term.setCursorPos(1, 1)
+		term.setTextColor(colors.white)
+		term.setBackgroundColor(colors.red)
+	end
+end
 -- Code
 openRednet()
 termClear()
 oldpullEvent = os.pullEvent
 os.pullEvent = os.pullEventRaw
 
-if color == true then term.setTextColor(colors.cyan) end
+setColor()
 checkFirstTime()
 print("Loading...")
 
