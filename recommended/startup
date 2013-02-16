@@ -177,26 +177,29 @@ function decrypt(data,psw)
 	return oData,out,chs
 end
 
-function openRednet()
- x = 1
- repeat
-  if x == 1 then
-   side = "right"
-  elseif x == 2 then
-   side = "left"
-  elseif x == 3 then
-   side = "top"
-  elseif x == 4 then
-   side = "bottom"
-  elseif x == 5 then
-   side = "back"
+local function openRednet()
+local listOfSides = rs.getSides()
+local listofPossibles = {}
+local counter1 = 0
+while true do
+  counter1 = counter1 +1
+
+  if peripheral.isPresent(tostring(listOfSides[counter1])) and peripheral.getType(listOfSides[counter1]) == "modem" then
+   table.insert(listofPossibles,tostring(listOfSides[counter1]))
   end
-  if rednet.isOpen(side) == nil then
-   rednet.open(side)
+
+  if counter1 == 6 and table.maxn(listofPossibles) == 0 then
+   print("no wifi present")
+   return nil
   end
-  x = x + 1
- until x == 6
+
+  if counter1 == 6 and table.maxn(listofPossibles) ~= 0 then
+   rednet.open(listofPossibles[1])
+   return listofPossibles[1]
+  end
 end
+end
+modemOn = openRednet()
 openRednet()
 
 shell.run("clear")

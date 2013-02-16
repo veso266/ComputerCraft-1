@@ -1,19 +1,14 @@
 -- CraftOS+ Client by Sirharry0077
 
 -- Variables
-changesVersion = "6.0.2" -- Development Purposes Only
-OSversion = "6.1"  -- Displays
+OSversion = "6.0"
 noconnection = "true"
 version = "recommended"
 newVersion = 0
 skip = "false"
 -- Get Variable
+version = "recommended"
 rootFolder = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/"
-if term.isColor() then
-	color = true
-else
-	color = false
-end
 
 -- Functions
 
@@ -251,7 +246,7 @@ function checkNewerVersion()
  vnumber = tonumber(OSversion)
  newvnumber = tonumber(newVersion)
  if newvnumber > vnumber then
-  termClear()
+  shell.run("clear")
   print("Update ", newversion, " Available")
   print("---------------------")
   download(rootFolder.."programs/changelog", "bin/changelog")
@@ -266,7 +261,7 @@ function checkNewerVersion()
   end
   write("Update Y/N?: ")
   answer = read()
-  termClear()
+  shell.run("clear")
   if answer == "y" then
    shell.run("install")
   elseif answer == "n" then
@@ -299,7 +294,7 @@ local function checkFirstTime()
   print("-------------------")
   print("Just Press ENTER To Proceed")
   read()
-  termClear()
+  shell.run("clear")
  end
 
   if fs.exists("bin/server") == false then
@@ -313,7 +308,7 @@ local function checkFirstTime()
   file = fs.open("bin/server", "w")
   file.write(newserver)
   file.close()
-  termClear()
+  shell.run("clear")
  end
  
  if fs.exists("bin/username") == false then
@@ -325,7 +320,7 @@ local function checkFirstTime()
   file = fs.open("bin/username", "w")
   file.write(newusername)
   file.close()
-  termClear()
+  shell.run("clear")
  end
 
  if fs.exists("bin/password") == false then
@@ -338,7 +333,7 @@ local function checkFirstTime()
   file = fs.open("bin/password", "w")
   file.write(newpassword)
   file.close()
-  termClear()
+  shell.run("clear")
  end
 end
 
@@ -347,52 +342,38 @@ computerid = os.computerID()
 end
 
 function screenClear()
-  termClear()
+  shell.run("clear")
   print("CraftOS+ ", OSversion)
   print("------------")
 end
 
-function writeLine(text)
-	length = string.len(text)
-	length = length - 1
-	line = "-"
-	repeat
-		line = line.."-"
-		length = length - 1
-	until length == 0
-end
-
 function writeLoginSreen() 
- termClear()
+ shell.run("clear")
  term.setCursorPos(1, 1)
  print("Computer #", computerid)
- 
- text1 = "CraftOS+ "..OSversion
- center(text1, 0, -4)
- 
- text2 = "CraftOS+ "..OSversion
- writeLine(text2)
- center(line, 0, -3)
- 
+ term.setCursorPos(20, 6)
+ print("CraftOS+ ", OSversion)
+ term.setCursorPos(20, 7)
+ print("------------")
+ term.setCursorPos(16, 8)
+ print("Username: ")
+ term.setCursorPos(16, 9)
+ print("Password: ")
  term.setCursorPos(1, 1)
  if noconnection == "true" then
   print("No Server Connection")
  end
 
- text3 = "Username: "
- center(text3, -4, -1)
+ term.setCursorPos(26, 8)
  file = fs.open("bin/username", "r")
  user = file.readLine()
  file.close()
- center(user, 3, -1)
+ print(user)
 
- text4 = "Password: "
- center(text4, -4, 0)
+ term.setCursorPos(26, 9)
  file = fs.open("bin/password", "r")
  pass = file.readLine()
  file.close()
- text5 = nil
- center(text5, 3, 0)
  pass2 = read("*")
  pass1 = encrypt(pass2, pass2)
  if pass1 == pass then
@@ -400,24 +381,6 @@ function writeLoginSreen()
  else
   writeLoginSreen()
  end
-end
-
-function center(text, xoffset, yoffset)
-	if xoffset == nil then xoffset = 0 end
-	if yoffset == nil then yoffset = 0 end
-	if text ~= nil then
-		len = string.len(text)
-		len = math.ceil(len / 2)
-	else
-		len = 2
-	end
-	local x,y = term.getSize()
-	x = math.ceil((x / 2) - len + xoffset)
-	y = math.ceil((y / 2) + yoffset)
-	term.setCursorPos(x, y)
-	if text ~= nil then
-		print(text)
-	end
 end
 
 local function setComputerLabel()
@@ -430,7 +393,7 @@ local function setComputerLabel()
 end
 
 function commandUpload()
- termClear()
+ shell.run("clear")
  print("Upload To Server")
  print("----------------")
  write("File: ")
@@ -464,7 +427,7 @@ function commandUpload()
 end
 
 function commandDownload()
- termClear()
+ shell.run("clear")
  print("Download")
  print("--------")
  write("File: ")
@@ -488,7 +451,7 @@ function commandDownload()
 end
 
 function stopServer()
- termClear()
+ shell.run("clear")
  print("Stopping Server...")
  print("------------------")
  rednet.send(serverid, "stop")
@@ -503,7 +466,7 @@ function stopServer()
 end
 
 function commandEncrypt()
-	if #arguments == 3 or #arguments == 4 then
+	if #arguments == 3 then
 		program = arguments[2]
 		password = arguments[3]
 		if fs.exists(program) == true then
@@ -517,9 +480,6 @@ function commandEncrypt()
 			file.write(data)
 			file.close()
 			print("Encrypted "..program)
-			if arguments[4] == "print" then
-				print(data)
-			end
 		else
 			print("File Does Not Exist")
 		end
@@ -529,7 +489,7 @@ function commandEncrypt()
 end
 
 function commandDecrypt()
-	if #arguments == 3 or #arguments == 4 then
+	if #arguments == 3 then
 		program = arguments[2]
 		password = arguments[3]
 		if fs.exists(program) == true then
@@ -544,9 +504,6 @@ function commandDecrypt()
 			file.close()
 			if encrypt(data1, password) == data then
 				print("Decrypted "..program)
-				if arguments[4] == "print" then
-					print(data1)
-				end
 			else
 				print("Incorrect Decryption Password")
 			end
@@ -588,25 +545,12 @@ function encryptFile(program, password)
 	end
 end
 
-function termClear()
-	term.clear()
-	term.setCursorPos(1,1)
-end
-
-function setColor()
-	if color == true then
-		term.setCursorPos(1, 1)
-		term.setTextColor(colors.white)
-		term.setBackgroundColor(colors.red)
-	end
-end
 -- Code
 openRednet()
-termClear()
+shell.run("clear")
 oldpullEvent = os.pullEvent
 os.pullEvent = os.pullEventRaw
 
-setColor()
 checkFirstTime()
 print("Loading...")
 
