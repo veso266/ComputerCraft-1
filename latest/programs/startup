@@ -1,7 +1,7 @@
 -- CraftOS+ Client by Sirharry0077
 
 -- Variables
-changesVersion = "6.2.1" -- Development Purposes Only
+changesVersion = "6.2.2" -- Development Purposes Only
 OSversion = "6.2"  -- Displays
 noconnection = "true"
 version = "recommended"
@@ -9,7 +9,8 @@ newVersion = 0
 skip = "false"
 
 -- Get Variable
-rootFolder = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/"
+rootFolder1 = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"
+rootFolder = rootFolder1..version.."/"
 if term.isColor() then
 	color = true
 else
@@ -810,6 +811,7 @@ help = [[
 Command Line:
 	-Access To Built In ComputerCraft Programs.
 	-Access To Encrypt/Decrypt Programs.
+	-Download extra programs with "extra".
 Firewolf:
 	-RedNet Internet Browser.
 Download:
@@ -839,7 +841,7 @@ function extraFunction()
 	if #arguments == 3 then
 		if arguments[2] == "install" then
 			program = arguments[3]
-			url = rootFolder.."extra/"..program
+			url = rootFolder1.."extra/"..program
 			download(url, program)
 			if success == true then
 				print(program.." Downloaded Successfully")
