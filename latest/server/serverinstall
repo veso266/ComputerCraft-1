@@ -1,0 +1,73 @@
+-- CraftOS+ Install Program
+version = "recommended"
+program = "serverinstaller"
+local fileLocation = "https://raw.github.com/Sirharry0077/ComputerCraft/master/"..version.."/programs/"..program
+if term.isColor() then
+	color = true
+else
+	color = false
+end
+
+local function fetchFile()
+ http.request(fileLocation)
+ local requesting = true
+ while requesting do
+  local event, url, sourceText = os.pullEvent()
+  if event == "http_success" then
+   local respondedText = sourceText.readAll()
+   requesting = false
+   local download = http.get(fileLocation)
+   local text = download.readAll()
+   download.close()
+   file = fs.open(program, "w")
+   file.write(text)
+   file.close()
+   success = true
+  elseif event == "http_failure" then
+   print("Server didn't respond.")
+   requesting = false
+   success = false
+  end
+ end
+end
+
+local function openRednet()
+local listOfSides = rs.getSides()
+local listofPossibles = {}
+local counter1 = 0
+while true do
+  counter1 = counter1 +1
+
+  if peripheral.isPresent(tostring(listOfSides[counter1])) and peripheral.getType(listOfSides[counter1]) == "modem" then
+   table.insert(listofPossibles,tostring(listOfSides[counter1]))
+  end
+
+  if counter1 == 6 and table.maxn(listofPossibles) == 0 then
+   print("no wifi present")
+   return nil
+  end
+
+  if counter1 == 6 and table.maxn(listofPossibles) ~= 0 then
+   rednet.open(listofPossibles[1])
+   return listofPossibles[1]
+  end
+end
+end
+modemOn = openRednet()
+
+openRednet()
+shell.run("clear")
+if color == true then term.setTextColor(colors.yellow) end
+print("Install")
+print("-------")
+if color == true then term.setTextColor(colors.red) end
+
+fetchFile()
+if success == true then
+ shell.run("serverinstaller")
+ fs.delete("serverinstaller")
+ os.reboot()
+ if color == true then term.setTextColor(colors.white) end
+else
+ print("Please Try Again")
+end

@@ -1,0 +1,23 @@
+-- Server
+shell.run("server/auth")
+if auth == "true" then
+ print("Waiting For Filename")
+ id, filename = rednet.receive(5)
+ if id ~= nil then
+  shell.run("server/auth")
+  if auth == "true" and fs.exists(filename) == true then
+   file = fs.open(filename, "r")
+   filetext = file.readAll()
+   file.close()
+   sleep(1)
+   rednet.send(id, filetext)
+   print("File Sent")
+  else
+   print("File Doesn't Exist")
+  end
+ else
+  print("Filename Not Received")
+ end
+else
+ print("Computer Not Authorized")
+end
