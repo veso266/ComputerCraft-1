@@ -1,0 +1,24 @@
+-- Cleint
+shell.run("clear")
+print("Download")
+print("--------")
+write("File: ")
+filename = read()
+write("Location: ")
+filename2 = read()
+rednet.send(serverid, "download")
+sleep(1)
+rednet.send(serverid, filename2)
+id, filetext = rednet.receive(5)
+if id == serverid and id ~= nil then
+ print("File Received")
+ file = fs.open(filename, "w")
+ file.write(filetext)
+ file.close()
+else
+ print("No Server Response")
+end
+
+print("Press ENTER To Finish")
+read()
+shell.run("semistartup")
