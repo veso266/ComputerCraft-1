@@ -7,15 +7,75 @@
 -- Varibles
 devVersion = "8.0.0" -- Development Purposes Only
 version = "8.0"
-name = "CraftOS+"
+OSName = "CraftOS+"
 defaultTextColor = 16
 defaultTitleColor = 16384
 defaultBackgroundColor = 32768
+bin = "bin"
+configFile = bin.."/config.txt"
 
 -- Functions
 function API()
 
-
+	function setSetting(file, name, setting)
+		reading = true
+		exist = true
+		if fs.exists(file) == false then
+			reading = false
+			exist = false
+		end
+        if exist == true then
+            config = fs.open(file, "r")
+        end
+		n = 0
+		settings  = {}
+		while reading do  -- Find if setting already exists and skip it
+			n = n + 1
+			line = config.readLine()
+			if line == nil then
+				reading = false
+			elseif string.sub(line, 1, string.len(name) + 1) == name..":" then
+				line = "Skipped"
+			else
+				settings[#settings + 1] = line  -- Save all settings except for pre-existing new one
+			end
+		end
+		if exist == true then config.close() end
+		fs.delete(file)  -- Delete File
+		config = fs.open(file, "w")
+		if exist == true then writing = true else writing = false end
+		n = 0
+		while writing do  -- Rewrite File
+			if #settings ~= 0 then
+				n = n + 1
+				config.writeLine(settings[n])
+			end
+			if n == #settings then
+				writing = false
+			end
+		end
+		config.writeLine(name..": "..setting)  -- Write New Setting
+		config.close()
+	end
+	
+	function getSetting(file, name)
+		if fs.exists(file) == false then error("No Such Config File", true) end
+		config = fs.open(file, "r")
+		reading = true
+		while reading do
+			line = config.readLine()
+			if string.sub(line, 1, string.len(name) + 1) == name..":" then
+				setting = string.sub(line, string.len(name) + 3, string.len(line))
+				reading = false
+			elseif line == nil then
+				setting = nil
+				reading = false
+			end
+		end
+		config.close()
+		return setting
+	end
+	
     function displayMessage(title, what, time)
         clear()
         titleColor()
@@ -353,7 +413,7 @@ function Client()
         clear()
         term.setCursorPos(1,1)
         titleColor()
-        print(name.." "..version)
+        print(OSName.." "..version)
         print("------------")
         textColor()
         local tSelections = {
@@ -385,15 +445,15 @@ function Client()
         print("Computer #"..os.getComputerID())
  
         titleColor()
-        local title = name.." "..version
+        title = OSName.." "..version
         centerPrint(title, 0, -4)
         centerPrint(makeLine(title), 0, -3)
 
         textColor()
-        local title = "Username: "
+        title = "Username: "
         centerPrint(title, -4, -1)
         ux, uy = term.getCursorPos()
-        local title = "Password: "
+        title = "Password: "
         centerPrint(title, -4, 0)
         px, py = term.getCursorPos()
         
@@ -461,21 +521,145 @@ function Server()
     
 end
 
+function KeyPad()
+	number = {}
+	number[1] = {1, 2, 1}
+	number[2] = {2, 2, 2}
+	number[3] = {3, 2, 3}
+	number[4] = {1, 3, 4}
+	number[5] = {2, 3, 5}
+	number[6] = {3, 3, 6}
+	number[7] = {1, 4, 7}
+	number[8] = {2, 4, 8}
+	number[9] = {3, 4, 9}
+	number[10] = {2, 5, 0}
+	function draw()
+		mon.setCursorPos(1,1)
+		mon.clearLine()
+		if #input ~= 0 then
+			n = #input
+			repeat
+				mon.write("*")
+				n = n - 1
+			until n == 0
+		end
+		mon.setCursorPos(7,1)
+		mon.write("X")
+		pn = 0
+		printing = true
+		while printing do
+			pn = pn + 1
+			mon.setCursorPos(number[pn][1], number[pn][2])
+			mon.write(tostring(number[pn][3]))
+			if pn == 10 then printing = false end
+		end
+	end
+	function waitInput()
+		event, side, x, y = os.pullEvent("monitor_touch")
+		return x, y
+	end
+	function figure(x, y)
+		figureing = true
+		success = false
+		rn = 0
+		while figureing do
+			rn = rn + 1
+			if number[rn][1] == x and number[rn][2] == y then
+				success = true
+				figureing = false
+			elseif rn == 10 then
+				figureing = false
+			end
+		end
+		if success == true then
+			return rn
+		elseif success == false then
+			return nil
+		end
+	end
+	function after(n, x, y)
+		if n ~= nil then
+			input[#input + 1] = tostring(number[n][3])
+			draw()
+		end
+		if x == 7 and y == 1 then
+			if #input ~= 0 and #input ~= 1 then
+				a = #input - 1
+				temp = {}
+				repeat
+					temp[a] = input[a]
+					a = a - 1
+				until a == 0
+				input = {}
+				a = 0
+				repeat
+					a = a + 1
+					input[a] = temp[a]
+				until a == #temp
+				draw()
+			elseif #input == 1 then
+				input = {}
+				draw()
+			end
+		end
+		if #input == 4 then
+			if tostring(input[1]..input[2]..input[3]..input[4]) == password then			
+				mon.clear()
+				mon.setCursorPos(1,1)
+				mon.write("    ")
+				mon.setBackgroundColor(8192)
+				input = {}
+				draw()
+				
+				-- Password Correct Code Here
+				
+				mon.setBackgroundColor(32768)
+			else
+			
+				mon.clear()
+				mon.setCursorPos(1,1)
+				mon.write("    ")
+				mon.setBackgroundColor(16384)
+			
+				input = {}
+				sleep(2)
+				draw()
+			end
+		end
+	end
+	password = "1234"
+	mon = peripheral.wrap("back")
+	input = {}
+	working = true
+	draw()
+	rn = 0
+	while working do
+		rx, ry = waitInput()
+		z = figure(rx, ry)
+		after(z, rx, ry)
+	end
+end
+
 function Load()
+    if fs.exists(bin) == false then
+        fs.makeDir(bin)
+    end
     oldpullEvent = os.pullEvent
     os.pullEvent = os.pullEventRaw
     API()
     if fs.exists("bin") == false or fs.exists("bin") == true then
         clear()
         titleColor()
-        local title = "Welcome To "..name
+        local title = "Welcome To "..OSName
         print(title)
         print(makeLine(title))
         print("Chose Installation Type")
         textColor()
         options = {
             "Client",
-            "Server"
+            "Server",
+			"Key Pad",
+            "Card Reader"
         }
         option, number = startMenu( options, 4, 5)
         
@@ -483,10 +667,129 @@ function Load()
             Client()
         elseif option == "Server" then
             Server()
+		elseif option == "Key Pad" then
+			KeyPad()
+        elseif option == "Card Reader" then
+            cardReader()
         else
             error("Invalid Menu Option", true)
         end
     end
+end
+
+function cardReader()
+    rConfig = "bin/ReaderConfig"
+    if fs.exists("rConfig") == false then
+        masterPass = "1"
+        repeat
+            masterPass = masterPass..tostring(math.random(1, 9))
+        until string.len(masterPass) == 32
+        setSetting(rConfig, "MasterPass", masterPass)
+    end
+    function menu()
+        tMenu = {
+            "Start",
+            "Stop",
+            "Generate New"
+        }
+        allowed = true
+        startXPos = 4
+        startYPos = 4
+        sTitle = "Ello"
+        local function printMenu( tMenu, sTitle, nSelected )
+            clear()
+            titleColor()
+            title = "Card Reader"
+            print(title)
+            print(makeLine(title))
+            if allowed == true then
+                print("Status: Enabled")
+            elseif allowed == false then
+                print("Status: Disabled")
+            end
+            for index, text in pairs( tMenu ) do
+                term.setCursorPos( startXPos, startYPos + index - 1 )
+                write( (nSelected == index and '[' or ' ') .. text .. (nSelected == index and ']' or ' ')  )
+            end
+        end
+        local selection = 1
+        event = {}
+        while true do
+            printMenu( tMenu, sTitle, selection )
+            event, event2 = os.pullEvent()
+            if event == "key" then
+                if event2 == keys.up then
+                    -- Up
+                    selection = selection - 1
+                elseif event2 == keys.down then
+                    -- Down
+                    selection = selection + 1
+                elseif event2 == keys.enter then
+                    -- Enter
+                    tMenu[selection] = pick
+                    if pick == "Start" then
+                        allowed = true
+                    elseif pick == "Stop" then
+                        allowed = false
+                    elseif pick == "Generate New" then
+                        clear()
+                        titleColor()
+                        title = "Generate New Card"
+                        print(title)
+                        print(makeLine(title))
+                        textColor()
+                        print("Insert Disk")
+                        id = tostring(disk.getID())
+                        event, side = os.pullEvent("disk")
+                        write("Name: ")
+                        name = read()
+                        number = "1"
+                        repeat
+                            number = number..tostring(math.random(1, 9))
+                        until string.len(number) == 256
+                        setSetting(rconfig, number, id)
+                        setSetting(rconfig, id, name)
+                        number = encrypt(number, getSetting(rConfig, "MasterPass"))
+                        path = disk.getMountPath(side)
+                        file = fs.open(path.."/number", "w")
+                        file.write(number)
+                        file.close()
+                        disk.setLabel(side, name.."'s ID Card")
+                        print("Done")
+                        print("Ejecting Disk")
+                        disk.eject(side)
+                        sleep(2)
+                    end
+                end
+                selection = selection < 1 and #tMenu or selection > #tMenu and 1 or selection
+            elseif event == "disk" then
+                side = event2
+                id = tostring(disk.getID(side))
+                path = disk.getMountPath(side)
+                if fs.exists(path.."/number") == true then
+                    file = fs.open(path.."/number", "r")
+                    number = file.readLine()
+                    file.close()
+                    if number ~= nil then
+                        number = decrypt(number, getSetting(rConfig, "MasterPass"))
+                        rID = getSetting(rConfig, number)
+                        if rID ~= nil then
+                            if rID == id then
+                                --Allowed Card Inserted Code Here
+                                disk.eject(side)
+                                redstone.setOutput("back", true)
+                                sleep(3)
+                                redstone.setOutput("back", false)
+                            end
+                        end
+                    end
+                else
+                    disk.eject(side)
+                end
+            end    
+        end
+    end
+    menu()
 end
 
 -- Startup
