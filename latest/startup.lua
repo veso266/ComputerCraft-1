@@ -1,7 +1,8 @@
 --[[
 
- CraftOS+ By Sirharry0077   
-    
+ CraftOS+ by Sirharry0077   
+ Encryption by PixelToast
+ 
 ]]--
 
 -- Varibles
